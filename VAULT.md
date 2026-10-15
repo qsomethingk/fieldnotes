@@ -62,6 +62,14 @@ Then write their answers into **three** places — all three, or later sessions 
 
 Either way, end this step with a populated `SOURCES.md` and confirm the count back to them.
 
+**Step 3b — Source-fit triage. Do this before locking the registry.**
+
+Verifying that a source is *reachable* is not the same as verifying it is *relevant*. For each source the user picked, report in one line what it has published in the last one to three months that actually touches the agreed threads — and if the answer is nothing, say so plainly and offer to swap it out.
+
+Do this **before** writing `SOURCES.md`'s final rows. A source that passes access verification and yields nothing on-topic otherwise becomes a permanent empty row the user checks forever. Better to find out now, while swapping is free.
+
+Then allocate the seed budget across the sources that earned it, rather than spreading it evenly. If one source has three strong pieces and another has none, file three from the first. **A chosen source with nothing on-topic does not get a note out of fairness.**
+
 **Step 4 — Seed hydration.** Now fill the vault enough to be useful.
 
 For each chosen source, find what it has published recently — the last one to three months is usually right. Then **present everything you found before writing anything**: title, date, source, and one line on why it is relevant to their stated threads. Let them select. Suggest **4–6 notes** for a first pass — enough for connections to appear, few enough that they might actually read them. Three notes from different sources is already enough to produce a real cross-source tension. They can run a refresh for more the same day.
@@ -75,6 +83,10 @@ Tell them honestly what the filing will cost: the questions take a few minutes, 
 Then file the selected pieces in this order:
 
 1. **Person notes** for each author or host — so content notes have something to link to. Always `status: understood`. For an **institutional source with no byline** (a lab report, an org blog), write one note for the *organisation* rather than inventing an author, and say so at the top of it. Do not create a person note for someone who has no independent public presence; name them in the content note instead.
+
+**Cap it.** A podcast network or a multi-author newsletter can imply a dozen person notes, most of them thin — and a thin person note is worse than none, because it looks like coverage. Write one only for people whose work you expect to **track over time**: the host who sets the agenda, the author of the piece you actually filed. Name everyone else inline. Two or three person notes per source is plenty on a first pass.
+
+**Bylines.** Where a page byline and the piece's own self-description disagree, trust the piece and record the conflict in the note. Where an institutional source carries an individual byline, `author:` goes to the organisation note and the individuals are named at the top of the content note — you are tracking the source, not assembling a contributor index.
 2. **Content notes**, to the quality standard, each linking to at least one thread
 3. **Threads** — the two or three agreed in **interview step 2** — each with its Key notes populated. **You may seed a thread's structure and Key notes; from then on the observations are the user's to write.** Then one seeding observation, **but only where two or more seed notes actually interact**: an observation is something several notes say together that no single note says. If a thread ended up with one note, write nothing and record in the thread why it is thin.
 4. **Backfill connections** across the seed set. During seeding every note is new, so ignore the usual "skip what backlinks would surface" rule — it would delete the step. Instead: for each note, add a line to the two or three others it genuinely bears on, saying what the connection *is*.
@@ -166,15 +178,19 @@ The division is a happy accident: the phone is bad at the thing it can't do (gen
 
 ## Note types & templates
 
-| Type | Folder | Template |
-|---|---|---|
-| concept | notes/ | .templates/concept.md |
-| paper | notes/ | .templates/paper.md |
-| repo | notes/ | .templates/repo.md |
-| person | notes/ | .templates/person.md |
-| podcast | notes/ | .templates/podcast.md |
-| thread | threads/ | .templates/thread.md |
-| exploration | explorations/ | .templates/exploration.md |
+| Type | Use it for | Folder | Template |
+|---|---|---|---|
+| `concept` | **Any written argument** — essay, blog post, newsletter issue, lab report, system card, incident writeup. This is the workhorse and most notes are this | notes/ | `.templates/concept.md` |
+| `paper` | Formal papers with authors and a venue | notes/ | `.templates/paper.md` |
+| `podcast` | Interviews and audio/video, where the value is spoken claims and exact quotes | notes/ | `.templates/podcast.md` |
+| `repo` | Code worth understanding | notes/ | `.templates/repo.md` |
+| `person` | A person or an **organisation** you follow. Orgs use the same template; say so in the first line of the note | notes/ | `.templates/person.md` |
+| `thread` | A long-lived question | threads/ | `.templates/thread.md` |
+| `exploration` | A session journal | explorations/ | `.templates/exploration.md` |
+
+**`concept` is not only for abstract concepts.** A blog post, a newsletter, a lab report and a conference talk writeup are all `concept` — the type names the *shape of the note*, not the genre of the source. There is no separate `blog` or `article` type, deliberately: more types means more rules nobody can keep straight, and `concept` plus a `source:` URL already carries the information.
+
+**Do not invent new type values.** `check.py` treats `concept`, `paper`, `podcast` and `repo` as content types and enforces `published:` on them; a type it does not know gets no checks at all, so an invented type silently opts out of validation.
 
 ---
 
@@ -213,7 +229,7 @@ The filename **is** the wikilink target, so conventions have to be stable across
 |---|---|---|
 | content note | kebab-case slug of the *claim*, not the headline | `coding-agent-spend-doubling.md` |
 | person | `firstname-lastname.md` | `jane-doe.md` |
-| organisation | kebab-case org name | `metr.md` |
+| organisation (a `person` note) | kebab-case org name | `metr.md` |
 | thread | kebab-case slug of the question | `how-capability-is-measured.md` |
 | exploration | `YYYY-MM-DD-topic.md` | `2026-10-14-building-a-harness.md` |
 
@@ -224,7 +240,9 @@ Prefer the claim to the title: a nine-word headline makes an unusable link. Neve
 - Always use `[[note-name]]` wiki links to connect related notes
 - Every note should link to at least one thread if one exists
 - Threads link TO notes (not the other way — notes link to threads)
-- Use `related:` frontmatter for explicit cross-references
+- Use `related:` frontmatter for the note's **primary** links — the threads it belongs to, and the one or two people most central to it. It is a navigation aid, not an index.
+- The **Connections to existing notes** section carries the full set, and says what each connection *is*. If a link is only in `related:`, nobody learns anything from it.
+- Format `related:` entries as quoted wikilinks — `- "[[note-name]]"` — so Obsidian and Dataview both resolve them.
 
 ---
 
@@ -251,7 +269,7 @@ status: fluent       # synthesized into user's own thinking, deeply linked, can 
 | concept, paper, podcast, repo | `foreign` |
 | person | `understood` (an index you maintain, not reading material) |
 | exploration | `understood` (you were there) |
-| thread | `fluent` (your own synthesis) |
+| thread | `fluent` — threads are synthesis, not reading material, so the status is about the file's role rather than your mastery of it |
 
 Never use old values (inbox, active, mature).
 

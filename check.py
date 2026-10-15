@@ -95,7 +95,7 @@ def main():
 
         ntype = field(fm, "type")
         status = field(fm, "status")
-        counts[status] += 1
+        counts[status or "(no status)"] += 1
 
         if status is None:
             problems.append((rel, "no status field"))
