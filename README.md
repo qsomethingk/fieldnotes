@@ -1,26 +1,42 @@
 # fieldnotes
 
-**A template for building a knowledge graph that follows AI — and gets richer every time you add to it.**
+**Field notes on a field that will not hold still.**
 
-Field notes on a field that will not hold still. Not a clipping service, not a summary pile — a vault where the connections between the things you read are maintained deliberately, so that after a few months you can see patterns that were not visible in any individual piece.
+A template for building a knowledge graph about AI that gets *richer* every time you add to it — instead of merely longer.
 
 ---
 
-## The problem
+I read a lot about AI. For a long stretch I had very little to show for it.
 
-Following AI properly means following it across a dozen channels at once. The research blogs. The newsletters nobody outside the field reads. Three-hour podcast interviews where someone concedes something they would never write down. Lab reports, system cards, arXiv papers, conference talks, long YouTube explainers. Most of the signal is not in the news — it is in the quiet voices, and it arrives as audio and video as often as text.
+Not for want of capture. There were highlights, saved threads, a folder of PDFs, a read-later queue I'd dutifully marked up and never reopened. What I didn't have was the thing I actually wanted, which was to be able to say: *here is how my understanding of this changed, here is what changed it, and here is who turned out to be wrong.*
 
-Two things then go wrong.
+That's a different problem from keeping up, and it needs a different tool.
 
-**Summaries decay.** You read a good piece, extract the gist, and three months later you have a sentence that has lost everything that made it useful — the number, the mechanism, the specific concession, the thing you disagreed with.
+## Why this field is hard in a specific way
 
-**Nothing connects.** Each piece lands in isolation. You never notice that the person confidently arguing X in March quietly abandoned it by August. You never notice that two researchers who appear to disagree actually share a premise and differ on one narrow empirical question. You never notice the same mechanism showing up in four unrelated places. Those are the only observations worth having, and they are invisible if every note is a dead end.
+Volume isn't the issue. Volume is easy — subscribe to more things. The difficulty is that the signal is scattered across formats, and most of it sits in places that don't announce themselves:
 
-What you end up with is a database of things you have encountered. Which is not understanding.
+- research blogs, where mechanisms actually get explained rather than gestured at
+- newsletters with four thousand readers and a better hit rate than the trade press
+- three-hour podcasts where somebody says the thing they'd never commit to writing
+- system cards, incident reports, eval documentation — the artifacts nobody calls papers
+- lab talks on YouTube with nine hundred views
 
-## What this is instead
+Very little of what matters arrives as news, and a lot of it arrives as audio.
 
-A vault designed so that **every addition increases the value of what is already there.** Four mechanisms do that work, and they are the actual content of this repo:
+Then two things go wrong, and they compound.
+
+**Summaries rot.** You read something excellent, extract the gist, and a few months later you're holding a sentence that has quietly shed everything that made it worth reading — the number, the mechanism, the grudging concession in the middle, the part you disagreed with. The summary survives. The understanding doesn't.
+
+**Nothing touches anything else.** Every piece lands in its own little hole. So you never notice that the person confidently arguing X in March had quietly dropped it by August. You never notice that two researchers who appear to be at war actually share a premise and differ on one narrow, testable question. You never notice the same mechanism turning up in four unrelated places, which is usually the tell that it's real.
+
+Those are the only observations worth having. They're also precisely the ones that are invisible when every note is a dead end.
+
+What you're left with is an immaculately organised record of things you have encountered — which is not the same as knowing anything.
+
+## What this does instead
+
+Builds a vault where **every addition increases the value of what's already in it.** Four mechanisms do that work, and they're the actual substance of this repo:
 
 ### 1. Distillation, not summary
 
@@ -32,7 +48,7 @@ This is the one that matters most and the one no tool does for you.
 
 When a new note is filed, the agent goes **back into the five to ten most related existing notes** and appends a line to each where the new material adds something non-obvious. Obsidian gives you backlinks from the new note outward for free. What it will not do is patch the old notes to point *forward*.
 
-Done on every pass, the corpus densifies rather than just growing. A note written in March keeps acquiring context through October. This is the difference between a collection and a graph, and it costs about fifteen minutes per refresh.
+Done on every pass, the corpus thickens instead of just lengthening. A note written in March keeps acquiring context through October — it is still being edited by things that hadn't happened yet when you wrote it. That's the whole difference between a collection and a graph, and it costs about fifteen minutes a session.
 
 ### 3. Threads — where patterns become visible
 
@@ -48,11 +64,13 @@ The dated observations are the payload. Read three of them in sequence and you a
 
 A note per person you follow, holding their work **chronologically by publication date**, and a section most people never think to create: **Positions they have publicly revised.**
 
-Following a field means watching smart people update. Almost nobody records it, so the revision dissolves into a vague sense that someone's view "shifted". Written down with both sides, both dates, and the trigger, it becomes the most valuable thing in the vault — and it makes you a much better reader of everyone else.
+Following a field means watching clever people change their minds. Almost nobody writes that down, so the revision dissolves into a vague feeling that someone's view "shifted at some point". Captured properly — both sides, both dates, and what moved them — it becomes the most valuable thing in the vault. It also makes you a markedly better reader of everybody else, because you start noticing who updates and who merely gets louder.
 
 ### And one honesty mechanism
 
-Three statuses, because an agent can hand you a hundred accurate notes in a week and you will know almost none of it:
+Here is the uncomfortable part. Point a capable agent at your reading list and it will hand you a hundred and fifty dense, accurate, beautifully linked notes inside a week. Your graph view will look magnificent. You will know almost none of it.
+
+So there are three statuses, and the vault is not permitted to be vague about which is which:
 
 ```yaml
 status: foreign      # an agent captured this. No human has read it.
@@ -173,8 +191,10 @@ One rule: on mobile, only ever edit `notes/`. A refresh rewrites `threads/` and 
 
 ## What this doesn't do
 
-- **It does not make you read.** It makes not-reading visible. Those are different.
-- **The queue will grow faster than you process it.** Capture is cheap and reading is not. Expect to schedule processing sessions deliberately, and expect to resist the temptation to capture instead.
+Plainly, because a tools repo without this section is just advertising.
+
+- **It does not make you read.** It makes *not* reading visible. Those are very different services, and only one of them is on offer here.
+- **The queue will grow faster than you process it.** Capture is cheap and reading is not, and no amount of tooling repeals that. Expect to schedule processing sessions on purpose, and expect to want to capture instead, because capturing feels like progress.
 - **Onboarding is an interview, not a script.** It needs you present, and cannot be run unattended.
 - **Quality depends on a capable model.** The standard means reconstructing an argument, not summarising it. Weaker models fail recognisably: correct section headings, bullet-point filler underneath.
 - **It needs a quality exemplar.** The standard is enforced by pointing at concrete notes. Delete `examples/` before you have replacements and output drifts toward summary.
