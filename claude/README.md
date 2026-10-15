@@ -25,7 +25,7 @@ mkdir -p ~/.claude/commands
 cp claude/commands/vault.md ~/.claude/commands/
 ```
 
-Then **open `~/.claude/commands/vault.md` and set your vault path on line 2**:
+The command resolves your vault automatically if you invoke it from the vault directory. Otherwise **open `~/.claude/commands/vault.md` and set the path on line 3**:
 
 ```markdown
 **`$VAULT` = `~/vault`**
@@ -42,13 +42,14 @@ That's the only configuration. Invoke with `/vault`, optionally with an instruct
 
 ### What the command does
 
-Three things, in order:
+Four things, in order:
 
-1. **`git pull` first.** Before reading anything. If you run a second clone on a phone, the desktop may be behind, and orienting on stale state produces duplicate notes and wrong "last session" summaries. The command has explicit handling for conflicts — it stops rather than auto-resolving.
-2. **Loads `VAULT.md`, `CONTEXT.md`, `SOURCES.md`.** In that order. `CONTEXT.md` is what calibrates depth; without it you get notes written for a generic reader.
-3. **Commits and pushes at the end,** with a frontmatter validation pass first.
+1. **Resolves and verifies your vault path**, and checks that `origin` is not the template repo. Do not delete this step — nothing else defines the path, and a wrong `origin` is the only unrecoverable error here.
+2. **`git pull`** — only against your own remote. If you run a second clone on a phone, the desktop may be behind, and orienting on stale state produces duplicate notes and wrong "last session" summaries. The command has explicit handling for conflicts — it stops rather than auto-resolving.
+3. **Loads `VAULT.md`, `CONTEXT.md`, `SOURCES.md`.** In that order. `CONTEXT.md` is what calibrates depth; without it you get notes written for a generic reader.
+4. **Commits at the end** (pushing only to your own remote), with a `check.py` pass first.
 
-If you only ever use one machine, you can delete Step 0 and the closing section. Everything else still works.
+On a single machine with no remote you can drop Step 0c and the closing push. **Keep Step 0a** — it is what defines `$VAULT`.
 
 ### Global vs project scope
 

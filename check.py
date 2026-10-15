@@ -14,6 +14,7 @@ Exit code 0 = clean, 1 = problems found.
 """
 
 import collections
+import io
 import os
 import re
 import sys
@@ -27,6 +28,17 @@ def frontmatter(text):
         return None
     end = text.find("\n---", 4)
     return text[4:end] if end != -1 else None
+
+
+def strip_code(text):
+    """Remove fenced blocks first, then inline spans.
+
+    Fenced blocks must go first: Mermaid uses [[Label]] for subroutine nodes,
+    and a single stray backtick elsewhere in the note flips inline-span parity
+    and exposes the whole diagram to the wikilink scan.
+    """
+    text = re.sub(r"^```.*?^```", "", text, flags=re.S | re.M)
+    return re.sub(r"`[^`\n]*`", "", text)
 
 
 def field(fm, name):
@@ -45,12 +57,22 @@ def main():
         if os.path.isdir(d):
             md += [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".md")]
 
-    if not md:
-        print(f"No notes found under {os.path.abspath(root)}/{{notes,threads,explorations}}.")
-        print("If this is a fresh vault, that is expected — run /vault to seed it.")
+    # root-level files get link + placeholder checks, but not frontmatter rules
+    roots = [
+        os.path.join(root, f)
+        for f in ("VAULT.md", "CONTEXT.md", "SOURCES.md", "READING-QUEUE.md")
+        if os.path.isfile(os.path.join(root, f))
+    ]
+
+    if not md and not roots:
+        print(f"Nothing to check in {os.path.abspath(root)} — is this a vault?")
         return 0
 
-    stems = {os.path.splitext(os.path.basename(p))[0] for p in md}
+    if not md:
+        print(f"No notes yet under {os.path.abspath(root)}/{{notes,threads,explorations}}.")
+        print("Expected on a fresh vault — checking the root files only.\n")
+
+    stems = {os.path.splitext(os.path.basename(p))[0] for p in md + roots}
     # example/ files are legitimate link targets too
     ex = os.path.join(root, "examples")
     for dirpath, _, files in os.walk(ex):
@@ -58,7 +80,7 @@ def main():
 
     for path in md:
         rel = os.path.relpath(path, root)
-        text = open(path, encoding="utf-8").read()
+        text = io.open(path, encoding="utf-8").read()
         fm = frontmatter(text)
 
         if fm is None:
@@ -93,14 +115,39 @@ def main():
             if not re.sub(r"<!--.*?-->", "", body, flags=re.S).strip():
                 problems.append((rel, "status is 'understood' but 'My take' is empty"))
 
-        # broken wikilinks, ignoring anything inside backticks
-        clean = re.sub(r"`[^`]*`", "", text)
+        clean = strip_code(text)
         for m in re.finditer(r"\[\[([^\]|#]+?)(?:\|[^\]]*)?\]\]", clean):
             target = m.group(1).strip()
             if target and target not in stems:
                 problems.append((rel, f"broken wikilink [[{target}]]"))
 
-    print(f"{len(md)} notes checked in {os.path.abspath(root)}")
+    PLACEHOLDERS = (
+        "[your role]", "[your domains]", "your-first-thread", "your-second-thread",
+        "[Your role and background", "[Name]", "[Item]",
+        "Rename this file", "Rename to SOURCES.md",
+    )
+    # Only meaningful once a vault claims to be set up. An unconfigured vault
+    # (or the template itself) is *supposed* to still have its placeholders.
+    ctx = os.path.join(root, "CONTEXT.md")
+    claims_configured = (
+        os.path.isfile(ctx)
+        and re.search(r"^configured:\s*true", io.open(ctx, encoding="utf-8").read(), re.M | re.I)
+    )
+
+    for path in roots:
+        rel = os.path.relpath(path, root)
+        text = io.open(path, encoding="utf-8").read()
+        if claims_configured:
+            for ph in PLACEHOLDERS:
+                if ph in text:
+                    problems.append((rel, f"unreplaced placeholder {ph!r} — onboarding left this behind"))
+        if claims_configured:
+            for m in re.finditer(r"\[\[([^\]|#]+?)(?:\|[^\]]*)?\]\]", strip_code(text)):
+                t = m.group(1).strip()
+                if t and t not in stems:
+                    problems.append((rel, f"broken wikilink [[{t}]]"))
+
+    print(f"{len(md)} notes + {len(roots)} root files checked in {os.path.abspath(root)}")
     if counts:
         print("  " + "  ".join(f"{s}: {n}" for s, n in sorted(counts.items(), key=lambda x: str(x[0]))))
 

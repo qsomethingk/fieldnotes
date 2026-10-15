@@ -5,8 +5,8 @@ tags:
   - example
   - scaling-laws
 related:
-  - example-thread-ai-safety
-  - example-concept-note
+  - "[[example-thread-ai-safety]]"
+  - "[[example-concept-note]]"
 created: 2026-01-15
 ---
 

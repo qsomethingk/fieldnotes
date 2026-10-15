@@ -1,7 +1,7 @@
 # Vault — Claude Instructions
 
 ## Quick start for a new AI assistant
-1. Read `CONTEXT.md` — who uses this vault, working style, last session
+1. Read `CONTEXT.md` — who uses this vault, working style, last session. *If it does not exist and you see `CONTEXT.template.md` instead, the vault is unconfigured — go straight to **FIRST RUN** below.*
 2. Read `SOURCES.md` — all tracked sources with last-filed notes
 3. Check `READING-QUEUE.md` — what's queued next
 4. You are now oriented. Workflow instructions follow.
@@ -27,13 +27,13 @@ This is the personal knowledge vault for **[your role]** following **[your domai
 **Check this before anything else.** The vault is unconfigured if **either** holds:
 
 1. `CONTEXT.md` is missing, or its frontmatter says `configured: false`
-2. `CONTEXT.md` has no `configured` field at all **and** `notes/` is empty or missing
+2. `CONTEXT.md` has no `configured` field at all **and** `notes/` is empty or missing (ignore `.gitkeep`)
 
 Check the flag, not the prose. Do not detect by searching for placeholder text — this file necessarily mentions its own placeholders, so any such check matches forever and the vault would re-onboard on every run.
 
-The last act of onboarding is to set `configured: true`. Nothing else should ever change it.
+Onboarding sets `configured: true` in its final step. Nothing else should ever change it.
 
-If unconfigured, **do not** try to run a normal session — there is nothing to orient on. Run the onboarding protocol below instead. Say so first: *"This vault isn't set up yet. Let me ask you a few things and then seed it — takes about ten minutes."*
+If unconfigured, **do not** try to run a normal session — there is nothing to orient on. Run the onboarding protocol below instead. Say so first, and be honest about the cost: *"This vault isn't set up yet. A few questions, then I'll spend a while filing — you'll have something to read at the end of it."*
 
 The user may also trigger this deliberately with `/vault init`, including to re-seed a vault that has drifted.
 
@@ -45,13 +45,13 @@ Work through these in order. **Ask in small batches, not as one long interrogati
 
 Then write their answers into **three** places — all three, or later sessions read placeholders:
 
-1. **`CONTEXT.md`** — rename `CONTEXT.template.md` to `CONTEXT.md` if it has not been renamed, then fill in "Who uses this vault" and "Vault working style". Keep the HTML comment above "Last session" — it carries the instruction for future sessions. Delete the other guidance comments.
+1. **`CONTEXT.md`** — rename `CONTEXT.template.md` to `CONTEXT.md` if it has not been renamed, then fill in "Who uses this vault" and "Vault working style". Keep the HTML comment **directly below the "## Last session" heading** — it carries the instruction future sessions depend on. Delete the other guidance comments, and clear the placeholder rows and `[Item]` stubs out of `SOURCES.md` as you fill it.
 2. **`SOURCES.md`** — rename `SOURCES.template.md` to `SOURCES.md`. It gets filled in step 3.
 3. **This file (`VAULT.md`)** — replace the identity line that reads "the personal knowledge vault for **[your role]**", and the **User style notes** list, which currently ships someone else's preferences. The **Active threads** list is replaced in step 2.
 
 `CONTEXT.md` is authoritative for identity and working style; `VAULT.md`'s copies are the short version an agent reads first. If they disagree, `CONTEXT.md` wins.
 
-**Step 2 — What are they following.** Ask what they are actually trying to learn, and over what horizon. Convert their answer into **two or three candidate threads** — long-lived *questions*, not topics. Propose them by name, get agreement, and do not create more than three. Then **replace the `[[your-first-thread]]` / `[[your-second-thread]]` placeholders in the Active threads section of this file** with the agreed names — they are broken wikilinks until you do, and the pre-commit check will flag them. Explain briefly that threads are where patterns accumulate, and that more than about six stops working.
+**Step 2 — What are they following.** Ask what they are actually trying to learn, and over what horizon. Convert their answer into **two or three candidate threads** — long-lived *questions*, not topics. Propose them by name, get agreement, and do not create more than three. Then **replace the `[[your-first-thread]]` / `[[your-second-thread]]` placeholders in the Active threads section of this file** with the agreed names — they are broken wikilinks until you do, and `check.py` flags them. Explain briefly that threads are where patterns accumulate, and that more than about six stops working.
 
 **Step 3 — Sources.** The step that determines whether this succeeds. Ask which path they want:
 
@@ -76,11 +76,11 @@ Then file the selected pieces in this order:
 
 1. **Person notes** for each author or host — so content notes have something to link to. Always `status: understood`. For an **institutional source with no byline** (a lab report, an org blog), write one note for the *organisation* rather than inventing an author, and say so at the top of it. Do not create a person note for someone who has no independent public presence; name them in the content note instead.
 2. **Content notes**, to the quality standard, each linking to at least one thread
-3. **Threads** — the two or three agreed in **interview step 2** — each with its Key notes populated. Then an observation, **but only where two or more seed notes actually interact**: an observation is something several notes say together that no single note says. If a thread ended up with one note, write nothing and record in the thread why it is thin.
+3. **Threads** — the two or three agreed in **interview step 2** — each with its Key notes populated. **You may seed a thread's structure and Key notes; from then on the observations are the user's to write.** Then one seeding observation, **but only where two or more seed notes actually interact**: an observation is something several notes say together that no single note says. If a thread ended up with one note, write nothing and record in the thread why it is thin.
 4. **Backfill connections** across the seed set. During seeding every note is new, so ignore the usual "skip what backlinks would surface" rule — it would delete the step. Instead: for each note, add a line to the two or three others it genuinely bears on, saying what the connection *is*.
 5. **Run `python3 check.py`** from the vault root and fix what it reports. This catches invalid frontmatter, unsubstituted `{{date}}`, and missing `published:` fields before they reach Dataview, where they fail silently.
 
-**Step 5 — Offer the optional extras.** Git, if they want versioning or a phone clone: `git init` if needed, then help them create a remote and `git remote add origin`. `MOBILE.md` covers the phone side, and assumes a remote already exists. Skip entirely if they decline — nothing else depends on it.
+**Step 5 — Offer the optional extras.** Git, if they want versioning or a phone clone. Check the current state first: `git init` is a no-op in an existing repo, and `git remote add origin` **fails if one already exists** — a cloned template has one. Use `git remote set-url origin <their-url>`, or `git remote remove origin` then add. Confirm with `git remote -v` that it is theirs, not the template's. `MOBILE.md` covers the phone side, and assumes a remote already exists. Skip entirely if they decline — nothing else depends on it.
 
 **Step 6 — Hand over.** In order:
 
@@ -96,7 +96,7 @@ Tell them plainly that everything is `status: foreign` because an agent wrote it
 
 `/vault init` may be run against a vault that already has content. **Before writing anything**, list what exists in `notes/`, `threads/`, and the current `CONTEXT.md`, show the user, and ask before replacing any of it. Never overwrite a human-written `## My take` or an `Observations over time` entry — those are the only things in the vault that cannot be regenerated.
 
-If `configured: false` but `notes/` is not empty, a previous onboarding died partway. **Resume** — inspect what is already there and continue — rather than starting over, which duplicates notes under slightly different filenames.
+If `configured: false` but `notes/` holds real notes (`.gitkeep` does not count), a previous onboarding died partway. **Resume** — inspect what is already there and continue — rather than starting over, which duplicates notes under slightly different filenames.
 
 ### What not to do during onboarding
 
@@ -120,7 +120,7 @@ You are the vault agent. Read this file fully, then:
 
 Always start from the templates, always link to threads, always use `status: foreign` on new content notes.
 
-**Where a template and this file disagree, this file wins; where this file and `examples/` disagree, the examples win.** The templates are a starting skeleton, not a ceiling — `concept.md` ships with one numbered section and real notes have several.
+**Precedence.** Where a template and this file disagree, **this file wins** — the templates are a starting skeleton, not a ceiling (`concept.md` ships one numbered section; real notes have several). Where this file and `examples/` disagree, **the examples win on density and structure only** — how long, how specific, how many sections. They never override a rule: the prohibitions in this file and in the onboarding protocol always hold.
 
 ---
 
@@ -158,7 +158,7 @@ The division is a happy accident: the phone is bad at the thing it can't do (gen
 **Consequences for any agent working here:**
 
 - **Always `git -C <vault-path> pull` before reading vault files.** The local clone may be behind by whatever the phone has pushed.
-- **Always commit and push at the end of a session.** An unpushed session is invisible to the phone and seeds the next conflict.
+- **Commit at the end of every session; push only to the user's own remote.** An unpushed session is invisible to the phone and seeds the next conflict — but never push to a remote you have not confirmed belongs to them.
 - **Never commit `.obsidian/plugins/*/data.json`** — obsidian-git stores the GitHub PAT there. It is gitignored; if it ever appears staged, stop.
 - Git syncs **commits**, not files. Uncommitted work does not exist to the other device.
 
@@ -244,7 +244,20 @@ status: understood   # user has read it, written "My take", engaged with the con
 status: fluent       # synthesized into user's own thinking, deeply linked, can reason from it freely
 ```
 
-When creating new notes, always use `status: foreign`. Never use old values (inbox, active, mature).
+**Status by note type** — the one table to follow. "Always `status: foreign`" applies to *content* notes only:
+
+| Type | Status on creation |
+|---|---|
+| concept, paper, podcast, repo | `foreign` |
+| person | `understood` (an index you maintain, not reading material) |
+| exploration | `understood` (you were there) |
+| thread | `fluent` (your own synthesis) |
+
+Never use old values (inbox, active, mature).
+
+**Dates.** Run `date +%F` **once at the start of every session** and use that value. Every template ships `created: {{date}}` (and `thread.md` also `updated: {{date}}`) — **substitute it with the real date in `YYYY-MM-DD` form.** Nothing does this automatically, a leftover `{{date}}` makes Dataview sort on a string, and your own sense of today's date is probably wrong. The same value is what judges whether a source published something "recently".
+
+**A piece whose publication date cannot be retrieved is not filed.** Guessing is forbidden and omitting fails `check.py`, so record it under **Needs a manual read** in `SOURCES.md` instead.
 
 Every content note (concept, paper, podcast, repo) **must** include a `published:` field with the original publication date of the source (YYYY-MM-DD when known, YYYY-MM if only month is available). This is distinct from `created:`, which records when the note was filed into the vault. Look up the actual publication date — do not guess or omit it.
 

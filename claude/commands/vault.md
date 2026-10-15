@@ -16,17 +16,27 @@ Then **assert `$VAULT/VAULT.md` exists.**
 
 If it does not, **stop and ask where the vault is.** Do not create anything, and do not treat it as an unconfigured vault. A directory with no `VAULT.md` means the *path is wrong* — onboarding into it would write notes with no templates and no quality exemplar, while the real vault sits untouched somewhere else. This is the most damaging failure available and it is silent, because "missing files" looks identical to "fresh vault".
 
-## Step 0b — sync before anything else
+## Step 0b — check whose repo this is
 
-The vault is also edited from a phone (Obsidian + obsidian-git), so the local clone may be behind. **Run `git -C "$VAULT" pull` before reading any vault file** (where `$VAULT` is your vault path — set it below). Reading first means orienting on stale state — notes may already be `understood`, and CONTEXT.md may be out of date.
+**Before any `git pull` or `git push`**, run `git -C "$VAULT" remote get-url origin`.
+
+If it returns the **fieldnotes template repo** (or any repo that is not the user's own), **stop all git operations.** Do not pull and do not push. Tell the user:
+
+> This vault still points at the fieldnotes template. Pulling would pull template changes into your notes, and pushing would try to push your vault to someone else's repo. Run `git remote remove origin` (then add your own), or `rm -rf .git && git init` to start fresh history.
+
+This matters because a plain `git clone` of the template leaves `origin` pointing at it with `main` tracking `origin/main`. Pushing there either fails on permissions or — if the user happens to have write access — publishes a private vault over a public repo. Never guess your way past this; a wrong `origin` is the one error here that cannot be undone.
+
+## Step 0c — sync
+
+If the vault has a remote **that belongs to the user** (Step 0b), run `git -C "$VAULT" pull` before reading any vault file. A second clone on a phone means the desktop may be behind. Reading first means orienting on stale state — notes may already be `understood`, and CONTEXT.md may be out of date.
 
 Handle the outcomes:
 
 - **Pull brought commits** → report in one line what arrived (e.g. "pulled 2 commits from phone: 3 notes advanced to understood"). Phone commits are usually status changes and "My take" text.
 - **Already up to date** → say nothing, continue.
 - **Uncommitted local changes** → list them before pulling. They are either the user's in-progress work or phone edits that never pushed. Do not stash or discard without asking.
-- **Merge conflict** → **stop and tell the user.** Do not auto-resolve. Conflicts here almost always mean a phone edit collided with a refresh that rewrote `threads/` or `CONTEXT.md`, and the user needs to decide which side wins.
-- **Not a git repo, or no remote configured** → say one line ("no remote, skipping sync") and **continue normally.** This is the expected state for a fresh template clone and for anyone running a single machine. It is not a problem and does not need a question.
+- **Merge conflict** → **stop and tell the user.** Do not auto-resolve. Two causes, and they need different fixes: a phone edit collided with a refresh that rewrote `threads/` or `CONTEXT.md` (the user decides which side wins), **or** the vault is still attached to the template remote and upstream edited `VAULT.md` (the fix is to detach — see Step 0b).
+- **Not a git repo, or no remote configured** → say one line ("no remote, skipping sync") and **continue normally.** This is the expected state after detaching the template remote, and for anyone on a single machine. It is not a problem and does not need a question.
 - **Pull fails** (network, auth) → say so and ask whether to continue offline. Reading offline is fine. Avoid a *refresh* offline **if the vault has a remote that other clones push to**, since a refresh rewrites `threads/` and `CONTEXT.md` wholesale. With no remote there is nothing to conflict with, so onboarding and refreshes are both safe.
 
 Then read `$VAULT/VAULT.md` fully and orient yourself to the vault — structure, templates, status pipeline (foreign → understood → fluent), active threads, and linking conventions.
@@ -57,7 +67,7 @@ At natural stopping points and at the end of any vault session, overwrite the "L
 
 ## Closing the loop — commit and push
 
-End every substantive session by committing. **Push only if a remote exists** — if there is none, commit and say so; do not treat it as an error. Where a remote does exist, an unpushed session is invisible to your other clones and seeds the next conflict.
+End every substantive session by committing. **Push only if a remote exists and it is the user's own** — re-check Step 0b if unsure. With no remote, commit and say so; that is not an error. Where the user's own remote exists, an unpushed session is invisible to their other clones and seeds the next conflict.
 
 - Separate commits for distinct kinds of work (a refresh, a hygiene fix, reading progress) rather than one mixed commit. The log is the vault's changelog — it is how you reconstruct what you learned when.
 - Never commit vendored plugin bundles under `.obsidian/plugins/*/` — only the small `.json` config files. `.obsidian/plugins/*/data.json` is gitignored because obsidian-git stores the GitHub PAT there; if that file ever shows up staged, stop.

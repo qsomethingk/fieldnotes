@@ -141,6 +141,7 @@ git clone https://github.com/qsomethingk/fieldnotes.git my-vault
 cd my-vault
 rm -rf .git && git init                      # make it yours
 
+mkdir -p ~/.claude/commands
 cp claude/commands/vault.md ~/.claude/commands/   # resolves to your cwd if it holds VAULT.md
 ```
 

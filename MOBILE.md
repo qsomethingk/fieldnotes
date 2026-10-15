@@ -82,7 +82,7 @@ That last pair matters more than it looks. Default auto-commit produces a stream
 | Before a desktop session | `git pull` — **especially before a refresh** |
 | After a desktop session | The agent commits and pushes; see the slash command |
 
-The one that actually prevents problems is **pull before a refresh**. A refresh rewrites `threads/` and `CONTEXT.md` wholesale, so it needs to start from the phone's latest state rather than discovering it afterwards. The shipped slash command does this in Step 0.
+The one that actually prevents problems is **pull before a refresh**. A refresh rewrites `threads/` and `CONTEXT.md` wholesale, so it needs to start from the phone's latest state rather than discovering it afterwards. The shipped slash command does this in Step 0c.
 
 ## If a conflict happens anyway
 
