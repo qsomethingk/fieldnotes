@@ -1,0 +1,23 @@
+# Content license — CC BY 4.0
+
+Copyright (c) 2026 qsomethingk
+
+Applies to the authored prose in this repository: `MOBILE.md` and the
+example notes under `examples/`.
+
+Licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0). You may share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit.
+
+Full text: https://creativecommons.org/licenses/by/4.0/
+
+## Third-party material
+
+The example notes summarise and quote publicly available essays and talks by
+their respective authors, with sources linked in each note's frontmatter.
+**Quoted material remains the property of its original authors** and is
+included here as commentary and criticism. This license covers only the
+original analysis, structure, and connective writing — not the quotations.
+
+If you are an author quoted in `examples/` and would like a note amended or
+removed, please open an issue.

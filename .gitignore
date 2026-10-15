@@ -1,0 +1,18 @@
+# Obsidian per-device UI state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Plugin data files — these hold credentials.
+# obsidian-git stores the GitHub Personal Access Token in its data.json.
+# Never commit these, especially with a public repo.
+.obsidian/plugins/*/data.json
+
+# Obsidian local state
+.trash/
+.obsidian/cache
+
+# Kiro agent config (contains local paths)
+.kiro/
+
+# macOS
+.DS_Store
